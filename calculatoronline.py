@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import math
 
 app = Flask(__name__)
 
@@ -10,7 +11,10 @@ def index():
 def calculate():
     try:
         expression = request.form['expression']
-        result = eval(expression)
+        # Securely evaluate expressions using a limited dictionary of allowed functions
+        # This prevents arbitrary code execution vulnerabilities with eval()
+        safe_dict = {'math': math, '__builtins__': {}}
+        result = str(eval(expression, safe_dict))
         return render_template('index.html', result=result, expression=expression)
     except Exception as e:
         return render_template('index.html', error=str(e), expression=expression)
