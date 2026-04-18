@@ -37,9 +37,8 @@ jobs:
     - name: Deploy to Azure Container App
       uses: azure/container-apps-deploy-action@v1
       with:
-        azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
-        container-app-name: ${{ env.CONTAINER_APP_NAME }}
-        resource-group: ${{ env.RESOURCE_GROUP }}
-        image: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-        # Optionally, you can set the target port if different from 80
-        # target-port: 80
+        azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+        containerAppName: ${{ env.CONTAINER_APP_NAME }}
+        resourceGroup: ${{ env.RESOURCE_GROUP }}
+        imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        targetPort: 80
