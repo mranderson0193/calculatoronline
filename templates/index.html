@@ -116,40 +116,27 @@
         <form action="/calculate" method="post">
             <input type="text" name="expression" value="{{ expression if expression else '' }}" placeholder="Enter expression" readonly id="display">
             <div class="keypad">
-                <button type="button" class="clear" onclick="clearDisplay()">AC</button>
-                <button type="button" class="clear" onclick="deleteLastChar()">DEL</button>
-                <button type="button" class="scientific" onclick="appendToDisplay('(')">(</button>
-                <button type="button" class="scientific" onclick="appendToDisplay(')')">)</button>
-                <button type="button" class="operator" onclick="appendToDisplay('/')">/</button>
-
-                <button type="button" class="scientific" onclick="appendToDisplay('math.sin(')">sin</button>
-                <button type="button" class="scientific" onclick="appendToDisplay('math.cos(')">cos</button>
-                <button type="button" class="scientific" onclick="appendToDisplay('math.tan(')">tan</button>
                 <button type="button" onclick="appendToDisplay('7')">7</button>
                 <button type="button" onclick="appendToDisplay('8')">8</button>
-
                 <button type="button" onclick="appendToDisplay('9')">9</button>
-                <button type="button" class="operator" onclick="appendToDisplay('*')">*</button>
-                <button type="button" class="scientific" onclick="appendToDisplay('math.log10(')">log</button>
-                <button type="button" class="scientific" onclick="appendToDisplay('math.sqrt(')">sqrt</button>
-                <button type="button" class="scientific" onclick="appendToDisplay('math.exp(')">exp</button>
-                
+                <button type="button" class="operator" onclick="appendToDisplay('/')">/</button>
+
                 <button type="button" onclick="appendToDisplay('4')">4</button>
                 <button type="button" onclick="appendToDisplay('5')">5</button>
                 <button type="button" onclick="appendToDisplay('6')">6</button>
-                <button type="button" class="operator" onclick="appendToDisplay('-')">-</button>
-                <button type="button" class="scientific" onclick="appendToDisplay('math.pi')">π</button>
-                
-                <button type="button" class="scientific" onclick="appendToDisplay('math.e')">e</button>
+                <button type="button" class="operator" onclick="appendToDisplay('*')">*</button>
+
                 <button type="button" onclick="appendToDisplay('1')">1</button>
                 <button type="button" onclick="appendToDisplay('2')">2</button>
                 <button type="button" onclick="appendToDisplay('3')">3</button>
-                <button type="button" class="operator" onclick="appendToDisplay('+')">+</button>
+                <button type="button" class="operator" onclick="appendToDisplay('-')">-</button>
 
                 <button type="button" onclick="appendToDisplay('0')">0</button>
                 <button type="button" onclick="appendToDisplay('.')">.</button>
-                <button type="button" class="operator" onclick="appendToDisplay('**')">x^y</button>
                 <button type="submit" class="equals">=</button>
+                <button type="button" class="operator" onclick="appendToDisplay('+')">+</button>
+
+                <button type="button" class="clear" onclick="clearDisplay()">C</button>
             </div>
             {% if result is defined %}
                 <div class="result">Result: {{ result }}</div>
@@ -167,11 +154,6 @@
 
         function clearDisplay() {
             document.getElementById('display').value = '';
-        }
-
-        function deleteLastChar() {
-            let display = document.getElementById('display');
-            display.value = display.value.slice(0, -1);
         }
     </script>
 </body>
