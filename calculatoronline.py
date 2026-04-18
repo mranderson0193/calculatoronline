@@ -7,6 +7,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 # Route to handle calculation requests
+#duniyaa bakaal hai
 @app.route('/calculate', methods=['POST'])
 def calculate():
     try:
