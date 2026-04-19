@@ -25,9 +25,9 @@
         .calculator {
             background: linear-gradient(180deg, #0f3460 0%, #1a1a2e 100%);
             border-radius: 25px;
-            padding: 25px;
+            padding: 30px;
             width: 100%;
-            max-width: 420px;
+            max-width: 550px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -51,13 +51,13 @@
             background: rgba(20, 50, 80, 0.8);
             border: 1px solid rgba(100, 150, 200, 0.3);
             border-radius: 12px;
-            padding: 20px 15px;
-            font-size: 2.2em;
+            padding: 25px 20px;
+            font-size: 2.8em;
             color: #4ade80;
             text-align: right;
             font-weight: 500;
             margin-top: 10px;
-            min-height: 60px;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -65,22 +65,26 @@
         
         .keypad {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-bottom: 10px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
         }
         
         .btn {
-            padding: 14px;
+            padding: 18px;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
+            border-radius: 12px;
+            font-size: 1.2em;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             background: #2a3f5f;
             color: #e0e0e0;
             border: 1px solid rgba(100, 150, 200, 0.2);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .btn:hover {
@@ -116,8 +120,7 @@
         .btn-equals {
             background: #4ade80;
             color: #000;
-            grid-column: 5 / 8;
-            font-size: 1.3em;
+            font-size: 1.4em;
         }
         
         .btn-equals:hover {
@@ -127,7 +130,6 @@
         .btn-clear {
             background: #ef4444;
             color: white;
-            grid-column: 6 / 8;
         }
         
         .btn-clear:hover {
@@ -216,16 +218,14 @@
             <button class="btn btn-function" onclick="appendToDisplay('(')">(</button>
             <button class="btn btn-function" onclick="appendToDisplay(')')">)</button>
             <button class="btn btn-function" onclick="appendToDisplay('%')">%</button>
-            <button class="btn btn-clear" onclick="clearAll()">AC</button>
             
-            <!-- Row 2: Trigonometric -->
+            <!-- Row 2 -->
             <button class="btn btn-function" onclick="appendToDisplay('1/') ">Inv</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.sin(')">sin</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.log(')">ln</button>
             <button class="btn" onclick="appendToDisplay('7')">7</button>
             <button class="btn" onclick="appendToDisplay('8')">8</button>
             <button class="btn" onclick="appendToDisplay('9')">9</button>
-            <button class="btn btn-operator" onclick="appendToDisplay('/')">&div;</button>
             
             <!-- Row 3 -->
             <button class="btn btn-function" onclick="appendToDisplay('math.pi')">π</button>
@@ -234,7 +234,6 @@
             <button class="btn" onclick="appendToDisplay('4')">4</button>
             <button class="btn" onclick="appendToDisplay('5')">5</button>
             <button class="btn" onclick="appendToDisplay('6')">6</button>
-            <button class="btn btn-operator" onclick="appendToDisplay('*')">&times;</button>
             
             <!-- Row 4 -->
             <button class="btn btn-function" onclick="appendToDisplay('math.e')">e</button>
@@ -243,16 +242,21 @@
             <button class="btn" onclick="appendToDisplay('1')">1</button>
             <button class="btn" onclick="appendToDisplay('2')">2</button>
             <button class="btn" onclick="appendToDisplay('3')">3</button>
-            <button class="btn btn-operator" onclick="appendToDisplay('-')">−</button>
             
             <!-- Row 5 -->
             <button class="btn btn-function" onclick="deleteLastChar()">Ans</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.exp(')">EXP</button>
             <button class="btn btn-function" onclick="appendToDisplay('**')">x^y</button>
-            <button class="btn" onclick="appendToDisplay('0')" style="grid-column: 4 / 5;">0</button>
+            <button class="btn" onclick="appendToDisplay('0')">0</button>
             <button class="btn" onclick="appendToDisplay('.')">.</button>
-            <button class="btn btn-equals" onclick="calculate()">=</button>
+            <button class="btn btn-clear" onclick="clearAll()">AC</button>
+            
+            <!-- Row 6: Operators -->
             <button class="btn btn-operator" onclick="appendToDisplay('+')">+</button>
+            <button class="btn btn-operator" onclick="appendToDisplay('-')">−</button>
+            <button class="btn btn-operator" onclick="appendToDisplay('*')">&times;</button>
+            <button class="btn btn-operator" onclick="appendToDisplay('/')">&div;</button>
+            <button class="btn btn-equals" onclick="calculate()">=</button>
         </div>
         
         <div id="result" style="display: none;"></div>
