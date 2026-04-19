@@ -97,26 +97,19 @@
             transform: translateY(0);
         }
         
+
+        /* Make all operation/scientific/function buttons orange and symmetric */
+        .btn-operator,
         .btn-function {
-            background: #232b3b;
-            color: #a5b4fc;
-            font-size: 1em;
-            border-radius: 24px;
-        }
-
-        .btn-function:hover {
-            background: #28304a;
-            color: #fff;
-        }
-
-        .btn-operator {
             background: #ff9800;
             color: #fff;
             border-radius: 24px;
+            font-size: 1em;
         }
-
-        .btn-operator:hover {
+        .btn-operator:hover,
+        .btn-function:hover {
             background: #ffb74d;
+            color: #fff;
         }
 
         .btn-equals {
@@ -208,14 +201,11 @@
     <div class="calculator">
         <div class="display-container">
             <span class="history-icon">⏱️</span>
-            <div class="display" id="display">0</div>
+            <div class="display" id="display">{{ result if result is defined else (expression if expression is defined and expression else '0') }}</div>
         </div>
-        
-        <form id="calcForm" method="post" action="/calculate">
-            <input type="hidden" name="expression" id="expression">
-        </form>
-        
-        <div class="keypad">
+        <form id="calcForm" method="post" action="/calculate" onsubmit="return handleSubmit(event)">
+            <input type="hidden" name="expression" id="expression" value="{{ expression if expression is defined else '' }}">
+            <div class="keypad">
             <!-- Row 1: Functions -->
             <button class="btn btn-function" onclick="toggleDegRad()">Deg</button>
             <button class="btn btn-function" onclick="toggleInverse()">Rad</button>
@@ -223,7 +213,7 @@
             <button class="btn btn-function" onclick="appendToDisplay('(')">(</button>
             <button class="btn btn-function" onclick="appendToDisplay(')')">)</button>
             <button class="btn btn-function" onclick="appendToDisplay('%')">%</button>
-            
+
             <!-- Row 2 -->
             <button class="btn btn-function" onclick="appendToDisplay('1/') ">Inv</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.sin(')">sin</button>
@@ -231,7 +221,7 @@
             <button class="btn" onclick="appendToDisplay('7')">7</button>
             <button class="btn" onclick="appendToDisplay('8')">8</button>
             <button class="btn" onclick="appendToDisplay('9')">9</button>
-            
+
             <!-- Row 3 -->
             <button class="btn btn-function" onclick="appendToDisplay('math.pi')">π</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.cos(')">cos</button>
@@ -239,7 +229,7 @@
             <button class="btn" onclick="appendToDisplay('4')">4</button>
             <button class="btn" onclick="appendToDisplay('5')">5</button>
             <button class="btn" onclick="appendToDisplay('6')">6</button>
-            
+
             <!-- Row 4 -->
             <button class="btn btn-function" onclick="appendToDisplay('math.e')">e</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.tan(')">tan</button>
@@ -247,36 +237,42 @@
             <button class="btn" onclick="appendToDisplay('1')">1</button>
             <button class="btn" onclick="appendToDisplay('2')">2</button>
             <button class="btn" onclick="appendToDisplay('3')">3</button>
-            
+
             <!-- Row 5 -->
             <button class="btn btn-function" onclick="deleteLastChar()">Ans</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.exp(')">EXP</button>
             <button class="btn btn-function" onclick="appendToDisplay('**')">x^y</button>
             <button class="btn" onclick="appendToDisplay('0')">0</button>
             <button class="btn" onclick="appendToDisplay('.')">.</button>
-            <button class="btn btn-clear" onclick="clearAll()">AC</button>
-            
+            <button class="btn btn-function" onclick="clearAll()">AC</button>
+
             <!-- Row 6: Operators -->
             <button class="btn btn-operator" onclick="appendToDisplay('+')">+</button>
             <button class="btn btn-operator" onclick="appendToDisplay('-')">−</button>
             <button class="btn btn-operator" onclick="appendToDisplay('*')">&times;</button>
             <button class="btn btn-operator" onclick="appendToDisplay('/')">&div;</button>
-            <button class="btn btn-equals" onclick="calculate()">=</button>
+            <button type="submit" class="btn btn-equals">=</button>
         </div>
         
-        <div id="result" style="display: none;"></div>
-        <div id="error" style="display: none;"></div>
+        {% if error is defined %}
+        <div class="error-display" id="error">⚠ {{ error }}</div>
+        {% endif %}
+        {% if result is defined %}
+        <div class="result-display" id="result">{{ result }}</div>
+        {% endif %}
     </div>
     
     <script>
-        let displayValue = '0';
+        let displayValue = '{{ expression if expression is defined else '' }}';
+        if (!displayValue || displayValue === 'None') displayValue = '0';
         let isDegrees = true;
         let isInverse = false;
-        
+
         function updateDisplay() {
             document.getElementById('display').textContent = displayValue || '0';
+            document.getElementById('expression').value = displayValue || '0';
         }
-        
+
         function appendToDisplay(value) {
             if (displayValue === '0' && value !== '.') {
                 displayValue = value;
@@ -285,69 +281,54 @@
             }
             updateDisplay();
         }
-        
+
         function deleteLastChar() {
             displayValue = displayValue.slice(0, -1) || '0';
             updateDisplay();
         }
-        
+
         function clearAll() {
             displayValue = '0';
             updateDisplay();
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
+            let resultDiv = document.getElementById('result');
+            let errorDiv = document.getElementById('error');
+            if (resultDiv) resultDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
         }
-        
+
         function toggleDegRad() {
             isDegrees = !isDegrees;
             event.target.textContent = isDegrees ? 'Deg' : 'Rad';
         }
-        
+
         function toggleInverse() {
             isInverse = !isInverse;
             event.target.textContent = isInverse ? 'Inv' : 'Inv';
         }
-        
-        function calculate() {
-            try {
-                document.getElementById('expression').value = displayValue;
-                document.getElementById('calcForm').submit();
-            } catch (e) {
-                showError('Invalid expression');
-            }
+
+        function handleSubmit(event) {
+            document.getElementById('expression').value = displayValue;
+            return true;
         }
-        
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = '⚠ ' + message;
-            errorDiv.style.display = 'block';
-            errorDiv.style.background = 'rgba(239, 68, 68, 0.1)';
-            errorDiv.style.border = '1px solid #ef4444';
-            errorDiv.style.borderRadius = '8px';
-            errorDiv.style.color = '#ff6b6b';
-            errorDiv.style.padding = '12px';
-            errorDiv.style.marginTop = '15px';
-            errorDiv.style.fontWeight = '600';
-        }
-        
+
         // Keyboard support
         document.addEventListener('keydown', function(event) {
             const key = event.key;
             if (/\d/.test(key) || key === '.') {
                 if (displayValue === '0') displayValue = key;
                 else displayValue += key;
+                updateDisplay();
             } else if (key === '+' || key === '-' || key === '*' || key === '/') {
                 appendToDisplay(key);
             } else if (key === 'Enter') {
-                calculate();
+                document.getElementById('calcForm').requestSubmit();
             } else if (key === 'Backspace') {
                 deleteLastChar();
             } else if (key === 'Escape') {
                 clearAll();
             }
-            updateDisplay();
         });
-        
+
         window.addEventListener('load', function() {
             updateDisplay();
         });
