@@ -7,9 +7,10 @@ on:
 
 env:
   AZURE_CONTAINER_REGISTRY: myflaskacr007.azurecr.io # Replace with your ACR name
-  CONTAINER_APP_NAME: my-flask-calculator-app     # Replace with your Container App name
-  RESOURCE_GROUP: my-flask-rg                 # Replace with your resource group name
-  IMAGE_NAME: flask-calculator                # Name of your Docker image
+  CONTAINER_APP_NAME: flask-calc-prod-app           # Container App name
+  CONTAINER_APP_ENVIRONMENT: flask-calc-prod-env    # Container Apps Environment name
+  RESOURCE_GROUP: my-flask-rg                        # Replace with your resource group name
+  IMAGE_NAME: flask-calculator                       # Name of your Docker image
 
 jobs:
   build-and-deploy:
@@ -39,6 +40,7 @@ jobs:
       with:
         azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
         containerAppName: ${{ env.CONTAINER_APP_NAME }}
+        containerAppEnvironment: ${{ env.CONTAINER_APP_ENVIRONMENT }}
         resourceGroup: ${{ env.RESOURCE_GROUP }}
         imageToDeploy: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         targetPort: 80
