@@ -309,6 +309,12 @@
 
         function handleSubmit(event) {
             document.getElementById('expression').value = displayValue;
+            // Prevent submission if ends with operator
+            if (/[*+\-/]$/.test(displayValue.trim())) {
+                showError('Expression cannot end with an operator');
+                event.preventDefault();
+                return false;
+            }
             return true;
         }
 
