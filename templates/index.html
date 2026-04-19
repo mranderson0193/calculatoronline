@@ -3,8 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Professional Scientific Calculator - Advanced mathematical calculations">
-    <title>Professional Scientific Calculator</title>
+    <meta name="description" content="Professional Scientific Calculator">
+    <title>Scientific Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .calculator {
+            background: linear-gradient(180deg, #0f3460 0%, #1a1a2e 100%);
+            border-radius: 25px;
+            padding: 25px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .display-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .history-icon {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 18px;
+            color: #888;
+            cursor: pointer;
+        }
+        
+        .display {
+            width: 100%;
+            background: rgba(20, 50, 80, 0.8);
+            border: 1px solid rgba(100, 150, 200, 0.3);
+            border-radius: 12px;
+            padding: 20px 15px;
+            font-size: 2.2em;
+            color: #4ade80;
+            text-align: right;
+            font-weight: 500;
+            margin-top: 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #2a3f5f;
+            color: #e0e0e0;
+            border: 1px solid rgba(100, 150, 200, 0.2);
+        }
+        
+        .btn:hover {
+            background: #3a4f6f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 150, 200, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-function {
+            background: #1e3a5f;
+            color: #64b5f6;
+            font-size: 0.95em;
+        }
+        
+        .btn-function:hover {
+            background: #2a4a7f;
+            color: #90caf9;
+        }
+        
+        .btn-operator {
+            background: #ff8c42;
+            color: white;
+        }
+        
+        .btn-operator:hover {
+            background: #ff7614;
+        }
+        
+        .btn-equals {
+            background: #4ade80;
+            color: #000;
+            grid-column: 5 / 8;
+            font-size: 1.3em;
+        }
+        
+        .btn-equals:hover {
+            background: #22c55e;
+        }
+        
+        .btn-clear {
+            background: #ef4444;
+            color: white;
+            grid-column: 6 / 8;
+        }
+        
+        .btn-clear:hover {
+            background: #dc2626;
+        }
+        
+        .btn-del {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-del:hover {
+            background: #dc2626;
+        }
+        
+        .result-display {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid #4ade80;
+            border-radius: 8px;
+            color: #4ade80;
+            font-weight: 600;
+            font-size: 1.2em;
+            min-height: 35px;
+        }
+        
+        .error-display {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            color: #ff6b6b;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .success-msg {
+            color: #4ade80;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+        
+        input[type="text"] {
+            display: none;
+        }
+        
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 20px;
+            }
+            
+            .display {
+                font-size: 1.8em;
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 12px;
+                font-size: 1em;
+            }
+            
+            .keypad {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display-container">
+            <span class="history-icon">⏱️</span>
+            <div class="display" id="display">0</div>
+        </div>
+        
+        <form id="calcForm" method="post" action="/calculate">
+            <input type="hidden" name="expression" id="expression">
+        </form>
+        
+        <div class="keypad">
+            <!-- Row 1: Functions -->
+            <button class="btn btn-function" onclick="toggleDegRad()">Deg</button>
+            <button class="btn btn-function" onclick="toggleInverse()">Rad</button>
+            <button class="btn btn-function" onclick="appendToDisplay('**')">x!</button>
+            <button class="btn btn-function" onclick="appendToDisplay('(')">(</button>
+            <button class="btn btn-function" onclick="appendToDisplay(')')">)</button>
+            <button class="btn btn-function" onclick="appendToDisplay('%')">%</button>
+            <button class="btn btn-clear" onclick="clearAll()">AC</button>
+            
+            <!-- Row 2: Trigonometric -->
+            <button class="btn btn-function" onclick="appendToDisplay('1/') ">Inv</button>
+            <button class="btn btn-function" onclick="appendToDisplay('math.sin(')">sin</button>
+            <button class="btn btn-function" onclick="appendToDisplay('math.log(')">ln</button>
+            <button class="btn" onclick="appendToDisplay('7')">7</button>
+            <button class="btn" onclick="appendToDisplay('8')">8</button>
+            <button class="btn" onclick="appendToDisplay('9')">9</button>
+            <button class="btn btn-operator" onclick="appendToDisplay('/')">&div;</button>
+            
+            <!-- Row 3 -->
+            <button class="btn btn-function" onclick="appendToDisplay('math.pi')">π</button>
+            <button class="btn btn-function" onclick="appendToDisplay('math.cos(')">cos</button>
+            <button class="btn btn-function" onclick="appendToDisplay('math.log10(')">log</button>
+            <button class="btn" onclick="appendToDisplay('4')">4</button>
+            <button class="btn" onclick="appendToDisplay('5')">5</button>
+            <button class="btn" onclick="appendToDisplay('6')">6</button>
+            <button class="btn btn-operator" onclick="appendToDisplay('*')">&times;</button>
+            
+            <!-- Row 4 -->
+            <button class="btn btn-function" onclick="appendToDisplay('math.e')">e</button>
+            <button class="btn btn-function" onclick="appendToDisplay('math.tan(')">tan</button>
+            <button class="btn btn-function" onclick="appendToDisplay('math.sqrt(')">√</button>
+            <button class="btn" onclick="appendToDisplay('1')">1</button>
+            <button class="btn" onclick="appendToDisplay('2')">2</button>
+            <button class="btn" onclick="appendToDisplay('3')">3</button>
+            <button class="btn btn-operator" onclick="appendToDisplay('-')">−</button>
+            
+            <!-- Row 5 -->
+            <button class="btn btn-function" onclick="deleteLastChar()">Ans</button>
+            <button class="btn btn-function" onclick="appendToDisplay('math.exp(')">EXP</button>
+            <button class="btn btn-function" onclick="appendToDisplay('**')">x^y</button>
+            <button class="btn" onclick="appendToDisplay('0')" style="grid-column: 4 / 5;">0</button>
+            <button class="btn" onclick="appendToDisplay('.')">.</button>
+            <button class="btn btn-equals" onclick="calculate()">=</button>
+            <button class="btn btn-operator" onclick="appendToDisplay('+')">+</button>
+        </div>
+        
+        <div id="result" style="display: none;"></div>
+        <div id="error" style="display: none;"></div>
+    </div>
+    
+    <script>
+        let displayValue = '0';
+        let isDegrees = true;
+        let isInverse = false;
+        
+        function updateDisplay() {
+            document.getElementById('display').textContent = displayValue || '0';
+        }
+        
+        function appendToDisplay(value) {
+            if (displayValue === '0' && value !== '.') {
+                displayValue = value;
+            } else {
+                displayValue += value;
+            }
+            updateDisplay();
+        }
+        
+        function deleteLastChar() {
+            displayValue = displayValue.slice(0, -1) || '0';
+            updateDisplay();
+        }
+        
+        function clearAll() {
+            displayValue = '0';
+            updateDisplay();
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        function toggleDegRad() {
+            isDegrees = !isDegrees;
+            event.target.textContent = isDegrees ? 'Deg' : 'Rad';
+        }
+        
+        function toggleInverse() {
+            isInverse = !isInverse;
+            event.target.textContent = isInverse ? 'Inv' : 'Inv';
+        }
+        
+        function calculate() {
+            try {
+                document.getElementById('expression').value = displayValue;
+                document.getElementById('calcForm').submit();
+            } catch (e) {
+                showError('Invalid expression');
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '⚠ ' + message;
+            errorDiv.style.display = 'block';
+            errorDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+            errorDiv.style.border = '1px solid #ef4444';
+            errorDiv.style.borderRadius = '8px';
+            errorDiv.style.color = '#ff6b6b';
+            errorDiv.style.padding = '12px';
+            errorDiv.style.marginTop = '15px';
+            errorDiv.style.fontWeight = '600';
+        }
+        
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            if (/\d/.test(key) || key === '.') {
+                if (displayValue === '0') displayValue = key;
+                else displayValue += key;
+            } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+                appendToDisplay(key);
+            } else if (key === 'Enter') {
+                calculate();
+            } else if (key === 'Backspace') {
+                deleteLastChar();
+            } else if (key === 'Escape') {
+                clearAll();
+            }
+            updateDisplay();
+        });
+        
+        window.addEventListener('load', function() {
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>
     <style>
         * {
             margin: 0;
@@ -224,53 +564,131 @@
             }
         }
 
-    </style>
 </head>
 <body>
-    <div class="calculator">
-        <h1>Online Calculator</h1>
-        <form action="/calculate" method="post">
-            <input type="text" name="expression" value="{{ expression if expression else '' }}" placeholder="Enter expression" readonly id="display">
-            <div class="keypad">
-                <button type="button" onclick="appendToDisplay('7')">7</button>
-                <button type="button" onclick="appendToDisplay('8')">8</button>
-                <button type="button" onclick="appendToDisplay('9')">9</button>
-                <button type="button" class="operator" onclick="appendToDisplay('/')">/</button>
-
-                <button type="button" onclick="appendToDisplay('4')">4</button>
-                <button type="button" onclick="appendToDisplay('5')">5</button>
-                <button type="button" onclick="appendToDisplay('6')">6</button>
-                <button type="button" class="operator" onclick="appendToDisplay('*')">*</button>
-
-                <button type="button" onclick="appendToDisplay('1')">1</button>
-                <button type="button" onclick="appendToDisplay('2')">2</button>
-                <button type="button" onclick="appendToDisplay('3')">3</button>
-                <button type="button" class="operator" onclick="appendToDisplay('-')">-</button>
-
-                <button type="button" onclick="appendToDisplay('0')">0</button>
-                <button type="button" onclick="appendToDisplay('.')">.</button>
-                <button type="submit" class="equals">=</button>
-                <button type="button" class="operator" onclick="appendToDisplay('+')">+</button>
-
-                <button type="button" class="clear" onclick="clearDisplay()">C</button>
+    <div class="container">
+        <div class="calculator">
+            <div class="header">
+                <h1>Scientific Calculator</h1>
+                <p class="subtitle">Professional Mathematical Tool</p>
             </div>
-            {% if result is defined %}
-                <div class="result">Result: {{ result }}</div>
-            {% endif %}
-            {% if error is defined %}
-                <div class="error">Error: {{ error }}</div>
-            {% endif %}
-        </form>
+            
+            <form action="/calculate" method="post" id="calcForm">
+                <div class="display-area">
+                    <input type="text" name="expression" value="{{ expression if expression else '' }}" placeholder="Enter expression" id="display">
+                </div>
+                
+                <div class="keypad">
+                    <button type="button" class="clear" onclick="clearDisplay()" style="grid-column: 1 / 3;">AC</button>
+                    <button type="button" class="clear" onclick="deleteLastChar()" style="grid-column: 3 / 5;">DEL</button>
+                    <button type="button" class="scientific" onclick="appendToDisplay('(')">(</button>
+                    
+                    <button type="button" class="scientific" onclick="appendToDisplay('math.sin(')">sin</button>
+                    <button type="button" class="scientific" onclick="appendToDisplay('math.cos(')">cos</button>
+                    <button type="button" class="scientific" onclick="appendToDisplay('math.tan(')">tan</button>
+                    <button type="button" class="operator" onclick="appendToDisplay('/')">/</button>
+                    <button type="button" class="scientific" onclick="appendToDisplay('math.sqrt(')">√</button>
+                    
+                    <button type="button" onclick="appendToDisplay('7')">7</button>
+                    <button type="button" onclick="appendToDisplay('8')">8</button>
+                    <button type="button" onclick="appendToDisplay('9')">9</button>
+                    <button type="button" class="operator" onclick="appendToDisplay('*')">×</button>
+                    <button type="button" class="scientific" onclick="appendToDisplay('math.log10(')">log</button>
+                    
+                    <button type="button" onclick="appendToDisplay('4')">4</button>
+                    <button type="button" onclick="appendToDisplay('5')">5</button>
+                    <button type="button" onclick="appendToDisplay('6')">6</button>
+                    <button type="button" class="operator" onclick="appendToDisplay('-')">−</button>
+                    <button type="button" class="scientific" onclick="appendToDisplay('math.pi')">π</button>
+                    
+                    <button type="button" onclick="appendToDisplay('1')">1</button>
+                    <button type="button" onclick="appendToDisplay('2')">2</button>
+                    <button type="button" onclick="appendToDisplay('3')">3</button>
+                    <button type="button" class="operator" onclick="appendToDisplay('+')">+</button>
+                    <button type="button" class="scientific" onclick="appendToDisplay('math.e')">e</button>
+                    
+                    <button type="button" onclick="appendToDisplay('0')">0</button>
+                    <button type="button" onclick="appendToDisplay('.')">.</button>
+                    <button type="button" onclick="appendToDisplay(')')" style="grid-column: 3 / 4;">)</button>
+                    <button type="button" class="operator" onclick="appendToDisplay('**')">x^y</button>
+                    
+                    <button type="submit" class="equals">=</button>
+                </div>
+                
+                {% if result is defined %}
+                    <div class="result">{{ result }}</div>
+                    <div class="success">✓ Calculation complete</div>
+                {% endif %}
+                
+                {% if error is defined %}
+                    <div class="error">⚠ {{ error }}</div>
+                {% endif %}
+            </form>
+        </div>
+        
+        <div class="info-panel">
+            <h2>📖 Quick Guide</h2>
+            
+            <div class="tip">
+                <strong>Basic Operations:</strong><br>
+                Use +, −, ×, ÷ for arithmetic
+            </div>
+            
+            <div class="info-item">
+                <strong>Scientific Functions:</strong>
+                <ul style="margin-left: 15px; margin-top: 5px;">
+                    <li>sin, cos, tan - Trigonometric</li>
+                    <li>log - Logarithm base 10</li>
+                    <li>√ - Square root</li>
+                    <li>x^y - Power function</li>
+                </ul>
+            </div>
+            
+            <div class="info-item">
+                <strong>Constants:</strong>
+                <ul style="margin-left: 15px; margin-top: 5px;">
+                    <li>π (pi) ≈ 3.14159</li>
+                    <li>e ≈ 2.71828</li>
+                </ul>
+            </div>
+            
+            <div class="tip">
+                <strong>Examples:</strong><br>
+                sin(π/2) = 1<br>
+                √16 + 5 = 9<br>
+                2^10 = 1024
+            </div>
+        </div>
     </div>
 
     <script>
         function appendToDisplay(value) {
-            document.getElementById('display').value += value;
+            const display = document.getElementById('display');
+            display.value += value;
+            display.focus();
+        }
+
+        function deleteLastChar() {
+            const display = document.getElementById('display');
+            display.value = display.value.slice(0, -1);
         }
 
         function clearDisplay() {
             document.getElementById('display').value = '';
+            document.getElementById('display').focus();
         }
+        
+        // Allow keyboard input
+        document.getElementById('display').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('calcForm').submit();
+            }
+        });
+        
+        // Focus on display when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('display').focus();
+        });
     </script>
 </body>
 </html>
