@@ -23,11 +23,11 @@
         }
         
         .calculator {
-            background: linear-gradient(180deg, #0f3460 0%, #1a1a2e 100%);
+            background: linear-gradient(180deg, #16213e 0%, #0f3460 100%);
             border-radius: 25px;
             padding: 30px;
             width: 100%;
-            max-width: 550px;
+            max-width: 700px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -65,23 +65,23 @@
         
         .keypad {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 14px;
             margin-bottom: 15px;
         }
-        
+
         .btn {
-            padding: 18px;
+            padding: 16px 0;
             border: none;
-            border-radius: 12px;
-            font-size: 1.2em;
-            font-weight: 600;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
-            background: #2a3f5f;
+            background: #232b3b;
             color: #e0e0e0;
-            border: 1px solid rgba(100, 150, 200, 0.2);
-            min-height: 60px;
+            border: 1px solid rgba(100, 150, 200, 0.08);
+            min-height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -98,42 +98,47 @@
         }
         
         .btn-function {
-            background: #1e3a5f;
-            color: #64b5f6;
-            font-size: 0.95em;
+            background: #232b3b;
+            color: #a5b4fc;
+            font-size: 1em;
+            border-radius: 24px;
         }
-        
+
         .btn-function:hover {
-            background: #2a4a7f;
-            color: #90caf9;
+            background: #28304a;
+            color: #fff;
         }
-        
+
         .btn-operator {
-            background: #ff8c42;
-            color: white;
+            background: #ff9800;
+            color: #fff;
+            border-radius: 24px;
         }
-        
+
         .btn-operator:hover {
-            background: #ff7614;
+            background: #ffb74d;
         }
-        
+
         .btn-equals {
-            background: #4ade80;
-            color: #000;
-            font-size: 1.4em;
+            background: #a5b4fc;
+            color: #232b3b;
+            font-size: 1.3em;
+            border-radius: 24px;
         }
-        
+
         .btn-equals:hover {
-            background: #22c55e;
+            background: #c7d2fe;
         }
-        
+
         .btn-clear {
-            background: #ef4444;
-            color: white;
+            background: #232b3b;
+            color: #a5b4fc;
+            border-radius: 24px;
         }
-        
+
         .btn-clear:hover {
-            background: #dc2626;
+            background: #28304a;
+            color: #fff;
         }
         
         .btn-del {
