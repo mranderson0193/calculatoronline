@@ -54,9 +54,14 @@ def calculate():
         expression = request.form.get('expression', '').strip()
         
         # Validate expression is not empty
-        if not expression:
-            logger.warning('Empty expression submitted')
-            return render_template('index.html', error='Please enter an expression', expression=expression)
+        if not expression or expression == '0':
+            logger.warning('Empty or invalid expression submitted')
+            return render_template('index.html', error='Please enter a valid expression', expression=expression)
+        
+        # Final validation: check for incomplete expressions
+        if expression[-1] in '+-*/.':
+            logger.warning(f'Incomplete expression: {expression}')
+            return render_template('index.html', error='Expression cannot end with an operator or decimal', expression=expression)
         
         # Validate expression length to prevent abuse
         if len(expression) > 500:

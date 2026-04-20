@@ -46,21 +46,49 @@
             cursor: pointer;
         }
         
+        .display-container {
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .expression-line {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.95rem;
+            min-height: 24px;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
         .display {
             width: 100%;
-            background: rgba(20, 50, 80, 0.8);
+            background: rgba(20, 50, 80, 0.9);
             border: 1px solid rgba(100, 150, 200, 0.3);
-            border-radius: 12px;
-            padding: 25px 20px;
-            font-size: 2.8em;
+            border-radius: 18px;
+            padding: 22px 18px;
+            font-size: clamp(2rem, 4vw, 2.8em);
             color: #4ade80;
             text-align: right;
             font-weight: 500;
-            margin-top: 10px;
-            min-height: 80px;
+            margin-top: 0;
+            min-height: 90px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
+            overflow-x: auto;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .display::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .display::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 3px;
         }
         
         .keypad {
@@ -158,13 +186,30 @@
         
         .error-display {
             margin-top: 15px;
-            padding: 12px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid #ef4444;
-            border-radius: 8px;
-            color: #ff6b6b;
+            padding: 15px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid #ef4444;
+            border-radius: 10px;
+            color: #ff6666;
             font-weight: 600;
             font-size: 0.95em;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+
+        .error-display.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .success-msg {
@@ -202,6 +247,7 @@
     <div class="calculator">
         <div class="display-container">
             <span class="history-icon">⏱️</span>
+            <div class="expression-line" id="expressionLine">{{ expression if expression is defined else '' }}</div>
             <div class="display" id="display">{{ result if result is defined else (expression if expression is defined and expression else '0') }}</div>
         </div>
         <form id="calcForm" method="post" action="/calculate" onsubmit="return handleSubmit(event)">
@@ -216,7 +262,7 @@
             <button class="btn btn-function" onclick="appendToDisplay('%')">%</button>
 
             <!-- Row 2 -->
-            <button class="btn btn-function" onclick="appendToDisplay('1/') ">Inv</button>
+            <button class="btn btn-function" onclick="appendToDisplay('1/')">Inv</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.sin(')">sin</button>
             <button class="btn btn-function" onclick="appendToDisplay('math.log(')">ln</button>
             <button class="btn" onclick="appendToDisplay('7')">7</button>
@@ -255,26 +301,47 @@
             <button type="submit" class="btn btn-equals">=</button>
         </div>
         
+        <!-- Client-side error display -->
+        <div class="error-display" id="error"></div>
+        
+        <!-- Server-side responses -->
         {% if error is defined %}
-        <div class="error-display" id="error">⚠ {{ error }}</div>
-        {% endif %}
-        {% if result is defined %}
-        <div class="result-display" id="result">{{ result }}</div>
+        <div class="error-display show" id="server-error">⚠ {{ error }}</div>
         {% endif %}
     </div>
     
     <script>
         let displayValue = '{{ expression if expression is defined else '' }}';
+        let serverResult = '{{ result if result is defined else '' }}';
         if (!displayValue || displayValue === 'None') displayValue = '0';
         let isDegrees = true;
         let isInverse = false;
 
-        function updateDisplay() {
-            document.getElementById('display').textContent = displayValue || '0';
-            document.getElementById('expression').value = displayValue || '0';
+        function updateDisplay(showServerResult = false) {
+            const expressionLine = document.getElementById('expressionLine');
+            const displayEl = document.getElementById('display');
+            const expressionValue = displayValue || '0';
+
+            if (expressionLine) {
+                expressionLine.textContent = expressionValue === '0' ? '' : expressionValue;
+            }
+            if (displayEl) {
+                displayEl.textContent = showServerResult && serverResult ? serverResult : expressionValue;
+            }
+            const hiddenInput = document.getElementById('expression');
+            if (hiddenInput) {
+                hiddenInput.value = displayValue || '0';
+            }
         }
 
         function appendToDisplay(value) {
+            // Clear error message when user starts entering new data
+            let errorDiv = document.getElementById('error');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = '';
+            }
+            serverResult = '';
             if (displayValue === '0' && value !== '.') {
                 displayValue = value;
             } else {
@@ -293,8 +360,14 @@
             updateDisplay();
             let resultDiv = document.getElementById('result');
             let errorDiv = document.getElementById('error');
-            if (resultDiv) resultDiv.style.display = 'none';
-            if (errorDiv) errorDiv.style.display = 'none';
+            if (resultDiv) {
+                resultDiv.style.display = 'none';
+                resultDiv.textContent = '';
+            }
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = '';
+            }
         }
 
         function toggleDegRad() {
@@ -307,14 +380,47 @@
             event.target.textContent = isInverse ? 'Inv' : 'Inv';
         }
 
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            if (errorDiv) {
+                errorDiv.textContent = '⚠ ' + message;
+                errorDiv.style.display = 'block';
+                // Auto-clear error after 5 seconds
+                setTimeout(() => {
+                    if (errorDiv && errorDiv.textContent.includes(message)) {
+                        errorDiv.style.display = 'none';
+                        errorDiv.textContent = '';
+                    }
+                }, 5000);
+            }
+        }
+
         function handleSubmit(event) {
             document.getElementById('expression').value = displayValue;
-            // Prevent submission if ends with operator
-            if (/[*+\-/]$/.test(displayValue.trim())) {
-                showError('Expression cannot end with an operator');
+            // Validate expression
+            const expr = displayValue.trim();
+            
+            // Check if empty
+            if (!expr || expr === '0') {
+                showError('Please enter a valid expression');
                 event.preventDefault();
                 return false;
             }
+            
+            // Prevent submission if ends with operator or decimal
+            if (/[*+\-/.]$/.test(expr)) {
+                showError('Expression cannot end with an operator or decimal');
+                event.preventDefault();
+                return false;
+            }
+            
+            // Prevent submission if starts with invalid character
+            if (/^[*+/.]/.test(expr)) {
+                showError('Expression cannot start with an operator');
+                event.preventDefault();
+                return false;
+            }
+            
             return true;
         }
 
@@ -337,231 +443,11 @@
         });
 
         window.addEventListener('load', function() {
-            updateDisplay();
+            updateDisplay(!!serverResult);
         });
     </script>
 </body>
 </html>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            max-width: 900px;
-        }
-        
-        .calculator {
-            background-color: #2d2d2d;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 380px;
-            text-align: center;
-            border: 1px solid #444;
-            flex-shrink: 0;
-        }
-        
-        .header {
-            margin-bottom: 25px;
-        }
-        
-        h1 {
-            color: #fff;
-            font-size: 1.8em;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        
-        .subtitle {
-            color: #aaa;
-            font-size: 0.85em;
-            font-weight: 300;
-        }
-        .calculator input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #444;
-            border-radius: 8px;
-            font-size: 1.8em;
-            text-align: right;
-            background-color: #333;
-            color: #0f0;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
-            box-sizing: border-box;
-        }
-        .display-area {
-            margin-bottom: 20px;
-        }
-        
-        .calculator .result {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #1a1a1a;
-            border-radius: 12px;
-            font-size: 1.5em;
-            font-weight: 600;
-            color: #4ade80;
-            word-wrap: break-word;
-            min-height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            border: 1px solid #333;
-        }
-        
-        .calculator .error {
-            color: #ff6b6b;
-            margin-top: 15px;
-            padding: 12px;
-            background-color: rgba(255, 107, 107, 0.1);
-            border-radius: 8px;
-            font-weight: 500;
-            border: 1px solid #ff6b6b;
-            font-size: 0.9em;
-        }
-        
-        .calculator .success {
-            color: #4ade80;
-            margin-top: 10px;
-            padding: 8px;
-            font-size: 0.9em;
-        }
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-        }
-        .calculator button {
-            padding: 16px 0;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            cursor: pointer;
-            background-color: #3a3a3a;
-            color: #e0e0e0;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            font-weight: 500;
-        }
-        
-        .calculator button:hover {
-            background-color: #4a4a4a;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-        
-        .calculator button:active {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .calculator button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .calculator button.operator,
-        .calculator button.scientific {
-            background-color: #ff8c42;
-            color: white;
-            font-weight: 600;
-        }
-        
-        .calculator button.operator:hover,
-        .calculator button.scientific:hover {
-            background-color: #ff7614;
-            transform: translateY(-3px);
-        }
-        
-        .calculator button.equals {
-            background-color: #4ade80;
-            color: #000;
-            font-weight: 700;
-            grid-column: 3 / 5;
-        }
-        
-        .calculator button.equals:hover {
-            background-color: #22c55e;
-        }
-        
-        .calculator button.clear {
-            background-color: #ef4444;
-            color: white;
-            font-weight: 600;
-        }
-        
-        .calculator button.clear:hover {
-            background-color: #dc2626;
-        }
-        
-        .info-panel {
-            background-color: #f5f5f5;
-            padding: 20px;
-            border-radius: 15px;
-            min-width: 250px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .info-panel h2 {
-            color: #333;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-        
-        .info-item {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-        
-        .tip {
-            background-color: #e0f2fe;
-            padding: 10px;
-            border-left: 3px solid #0284c7;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            color: #0c4a6e;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .calculator {
-                width: 100%;
-                max-width: 380px;
-            }
-            
-            .info-panel {
-                width: 100%;
-                max-width: 380px;
-            }
-        }
-
-</head>
 <body>
     <div class="container">
         <div class="calculator">
