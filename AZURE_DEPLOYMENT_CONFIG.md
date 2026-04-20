@@ -33,7 +33,7 @@ az containerapp create `
   --resource-group my-flask-rg `
   --environment flask-calc-prod-env `
   --image myflaskacr007.azurecr.io/flask-calculator:latest `
-  --target-port 80 `
+  --target-port 5000 `
   --ingress external `
   --registry-server myflaskacr007.azurecr.io `
   --registry-username myflaskacr007 `

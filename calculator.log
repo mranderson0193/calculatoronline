@@ -1,0 +1,14 @@
+2026-04-19 21:29:00,653 - __main__ - INFO - Starting Flask Calculator (Debug: True)
+2026-04-19 21:29:00,779 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.3:5000
+2026-04-19 21:29:00,779 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-04-19 21:29:00,783 - werkzeug - INFO -  * Restarting with stat
+2026-04-19 21:29:01,315 - __main__ - INFO - Starting Flask Calculator (Debug: True)
+2026-04-19 21:29:01,348 - werkzeug - WARNING -  * Debugger is active!
+2026-04-19 21:29:01,357 - werkzeug - INFO -  * Debugger PIN: 876-631-311
+2026-04-19 21:29:25,887 - __main__ - INFO - Home page accessed
+2026-04-19 21:29:25,961 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2026 21:29:25] "GET / HTTP/1.1" 200 -
+2026-04-19 21:29:33,870 - __main__ - INFO - Calculated: 78*87 = 6786
+2026-04-19 21:29:33,870 - werkzeug - INFO - 127.0.0.1 - - [19/Apr/2026 21:29:33] "POST /calculate HTTP/1.1" 200 -

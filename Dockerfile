@@ -10,9 +10,9 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
 
 # Run calculatoronline.py when the container launches
 # Use gunicorn for production deployments
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "calculatoronline:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "calculatoronline:app"]

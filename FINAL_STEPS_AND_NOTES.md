@@ -1,9 +1,9 @@
-# Final Steps & Key Notes for Scientific Calculator Project
+# Final Steps & Key Notes for Simple Calculator Project
 
 ## 1. Code Review & Testing
 - Review all code for clarity, security, and maintainability.
-- Test all calculator functions (basic and scientific) for correctness.
-- Validate error handling (e.g., division by zero, incomplete expressions).
+- Test all calculator functions (basic arithmetic: +, −, ×, ÷) for correctness.
+- Validate error handling (e.g., division by zero, incomplete expressions, invalid characters).
 - Test UI on both desktop and mobile devices for responsiveness.
 
 ## 2. Deployment Checklist
@@ -24,7 +24,7 @@
 - Include troubleshooting tips for common issues (e.g., deployment errors, UI bugs).
 
 ## 5. Maintenance & Extensibility
-- Plan for future enhancements (e.g., more scientific functions, themes).
+- Plan for future enhancements (e.g., dark/light themes, keyboard shortcuts, history).
 - Monitor logs for errors and user feedback.
 - Back up code and configuration regularly.
 
@@ -35,6 +35,6 @@
 
 ---
 
-**Congratulations on completing your Scientific Calculator project!**
+**Congratulations on completing your Simple Calculator project!**
 
 Take note of these steps to ensure a smooth launch, easy maintenance, and a professional handover.

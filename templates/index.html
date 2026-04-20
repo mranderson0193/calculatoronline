@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Professional Scientific Calculator">
-    <title>Scientific Calculator</title>
+    <title>Simple Calculator</title>
     <style>
         * {
             margin: 0;
@@ -13,8 +12,8 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,522 +22,262 @@
         }
         
         .calculator {
-            background: linear-gradient(180deg, #16213e 0%, #0f3460 100%);
+            background: #1e1e2e;
             border-radius: 20px;
-            padding: 22px;
+            padding: 24px;
             width: 100%;
-            max-width: 550px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            max-width: 360px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .display-container {
-            margin-bottom: 18px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        
-        .history-icon {
-            position: absolute;
-            top: 8px;
-            left: 12px;
-            font-size: 16px;
-            color: #666;
-            cursor: pointer;
-        }
-
-        .expression-line {
-            color: rgba(150, 200, 255, 0.5);
-            font-size: 0.85rem;
-            min-height: 18px;
-            text-align: right;
-            overflow-wrap: anywhere;
-            padding: 0 10px;
-        }
-
         .display {
-            width: 100%;
-            background: rgba(20, 50, 80, 0.95);
-            border: 1px solid rgba(100, 150, 200, 0.25);
-            border-radius: 15px;
-            padding: 16px 14px;
-            font-size: clamp(1.8rem, 3.5vw, 2.4em);
-            color: #4ade80;
+            background: #0d0d15;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
             text-align: right;
-            font-weight: 400;
-            margin-top: 0;
-            min-height: 60px;
+            font-size: 2.5em;
+            color: #00ff88;
+            font-weight: 600;
+            min-height: 70px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            overflow-x: auto;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .display::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .display::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.18);
-            border-radius: 3px;
+            word-wrap: break-word;
+            word-break: break-all;
         }
         
         .keypad {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 0;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
         }
-
+        
         .btn {
-            padding: 12px 0;
+            padding: 16px;
             border: none;
-            border-radius: 12px;
-            font-size: 0.95em;
+            border-radius: 10px;
+            font-size: 1.2em;
             font-weight: 600;
             cursor: pointer;
+            background: #2d2d44;
+            color: #ccc;
             transition: all 0.15s ease;
-            background: #2a3a52;
-            color: #d0d0d0;
-            border: 1px solid rgba(100, 150, 200, 0.05);
-            min-height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 1px solid #3d3d54;
         }
         
         .btn:hover {
-            background: #354560;
+            background: #3d3d54;
+            transform: translateY(-2px);
         }
         
         .btn:active {
-            background: #2a3a52;
+            transform: translateY(0);
         }
         
-
-        /* Make all operation/scientific/function buttons orange and symmetric */
-        .btn-operator,
-        .btn-function {
-            background: #ff9800 !important;
-            color: #fff !important;
-            border-radius: 12px;
-            font-size: 0.95em;
-            transition: none;
-            border: none;
+        .btn-operator {
+            background: #ff9800;
+            color: #fff;
         }
-        .btn-operator:hover,
-        .btn-function:hover {
-            background: #ffaa33 !important;
-            color: #fff !important;
+        
+        .btn-operator:hover {
+            background: #ffaa33;
         }
-        .btn-operator:active,
-        .btn-function:active {
-            background: #ff9800 !important;
-        }
-
+        
         .btn-equals {
-            background: #a5b4fc;
-            color: #1a2a4a;
-            font-size: 1.1em;
-            border-radius: 12px;
-            font-weight: 700;
+            background: #4caf50;
+            color: #fff;
         }
-
+        
         .btn-equals:hover {
-            background: #b5c4ff;
+            background: #66bb6a;
         }
-
-        .btn-equals:active {
-            background: #a5b4fc;
+        
+        .btn-clear {
+            background: #f44336;
+            color: #fff;
         }
-
-        .error-display {
+        
+        .btn-clear:hover {
+            background: #ef5350;
+        }
+        
+        .btn-delete {
+            background: #ff6f00;
+            color: #fff;
+        }
+        
+        .btn-delete:hover {
+            background: #ff8c00;
+        }
+        
+        .error-msg {
+            color: #ff6b6b;
             margin-top: 12px;
-            padding: 12px 14px;
-            background: rgba(239, 68, 68, 0.12);
-            border: 1.5px solid #ff5555;
-            border-radius: 10px;
-            color: #ff7777;
-            font-weight: 600;
+            padding: 10px;
+            background: rgba(220, 50, 50, 0.1);
+            border: 1px solid #ff5555;
+            border-radius: 8px;
             font-size: 0.9em;
-            animation: slideIn 0.3s ease-out;
+            text-align: center;
             display: none;
         }
-
-        .error-display.show {
+        
+        .error-msg.show {
             display: block;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        input[type="text"] {
-            display: none;
         }
         
         @media (max-width: 480px) {
             .calculator {
-                padding: 16px;
                 max-width: 100%;
+                padding: 16px;
             }
             
             .display {
-                font-size: 1.6em;
-                padding: 14px 12px;
-                min-height: 55px;
+                font-size: 2em;
+                padding: 16px;
             }
             
             .btn {
-                padding: 10px 0;
-                font-size: 0.9em;
-                min-height: 38px;
-            }
-            
-            .keypad {
-                gap: 6px;
+                padding: 14px;
+                font-size: 1.1em;
             }
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <div class="display-container">
-            <span class="history-icon">⏱️</span>
-            <div class="expression-line" id="expressionLine">{{ expression if expression is defined else '' }}</div>
-            <div class="display" id="display">{{ result if result is defined else (expression if expression is defined and expression else '0') }}</div>
-        </div>
+        <div class="display" id="display">0</div>
+        
         <form id="calcForm" method="post" action="/calculate" onsubmit="return handleSubmit(event)">
-            <input type="hidden" name="expression" id="expression" value="{{ expression if expression is defined else '' }}">
+            <input type="hidden" name="expression" id="expression">
+            
             <div class="keypad">
-            <!-- Row 1: Deg, Rad, x!, (, ), %, AC -->
-            <button class="btn btn-function" onclick="toggleDegRad()">Deg</button>
-            <button class="btn btn-function" onclick="toggleInverse()">Rad</button>
-            <button class="btn btn-function" onclick="appendToDisplay('**')">x!</button>
-            <button class="btn btn-function" onclick="appendToDisplay('(')">(</button>
-            <button class="btn btn-function" onclick="appendToDisplay(')')">)</button>
-            <button class="btn btn-function" onclick="appendToDisplay('%')">%</button>
-            <button class="btn btn-function" onclick="clearAll()">AC</button>
-
-            <!-- Row 2: Inv, sin, ln, 7, 8, 9, ÷ -->
-            <button class="btn btn-function" onclick="appendToDisplay('1/')">Inv</button>
-            <button class="btn btn-function" onclick="appendToDisplay('math.sin(')">sin</button>
-            <button class="btn btn-function" onclick="appendToDisplay('math.log(')">ln</button>
-            <button class="btn" onclick="appendToDisplay('7')">7</button>
-            <button class="btn" onclick="appendToDisplay('8')">8</button>
-            <button class="btn" onclick="appendToDisplay('9')">9</button>
-            <button class="btn btn-operator" onclick="appendToDisplay('/')">÷</button>
-
-            <!-- Row 3: π, cos, log, 4, 5, 6, × -->
-            <button class="btn btn-function" onclick="appendToDisplay('math.pi')">π</button>
-            <button class="btn btn-function" onclick="appendToDisplay('math.cos(')">cos</button>
-            <button class="btn btn-function" onclick="appendToDisplay('math.log10(')">log</button>
-            <button class="btn" onclick="appendToDisplay('4')">4</button>
-            <button class="btn" onclick="appendToDisplay('5')">5</button>
-            <button class="btn" onclick="appendToDisplay('6')">6</button>
-            <button class="btn btn-operator" onclick="appendToDisplay('*')">×</button>
-
-            <!-- Row 4: e, tan, √, 1, 2, 3, − -->
-            <button class="btn btn-function" onclick="appendToDisplay('math.e')">e</button>
-            <button class="btn btn-function" onclick="appendToDisplay('math.tan(')">tan</button>
-            <button class="btn btn-function" onclick="appendToDisplay('math.sqrt(')">√</button>
-            <button class="btn" onclick="appendToDisplay('1')">1</button>
-            <button class="btn" onclick="appendToDisplay('2')">2</button>
-            <button class="btn" onclick="appendToDisplay('3')">3</button>
-            <button class="btn btn-operator" onclick="appendToDisplay('-')">−</button>
-
-            <!-- Row 5: Ans, EXP, x^y, 0, ., =, + -->
-            <button class="btn btn-function" onclick="deleteLastChar()">Ans</button>
-            <button class="btn btn-function" onclick="appendToDisplay('math.exp(')">EXP</button>
-            <button class="btn btn-function" onclick="appendToDisplay('**')">x^y</button>
-            <button class="btn" onclick="appendToDisplay('0')">0</button>
-            <button class="btn" onclick="appendToDisplay('.')">.</button>
-            <button type="submit" class="btn btn-equals">=</button>
-            <button class="btn btn-operator" onclick="appendToDisplay('+')">+</button>
-        </div>
-        
-        <!-- Client-side error display -->
-        <div class="error-display" id="error"></div>
-        
-        <!-- Server-side responses -->
-        {% if error is defined %}
-        <div class="error-display show" id="server-error">⚠ {{ error }}</div>
-        {% endif %}
+                <!-- Row 1: Clear, Delete, Divide, Multiply -->
+                <button type="button" class="btn btn-clear" onclick="clearDisplay()">AC</button>
+                <button type="button" class="btn btn-delete" onclick="deleteLastChar()">DEL</button>
+                <button type="button" class="btn btn-operator" onclick="appendChar('/')">÷</button>
+                <button type="button" class="btn btn-operator" onclick="appendChar('*')">×</button>
+                
+                <!-- Row 2: 7, 8, 9, Subtract -->
+                <button type="button" class="btn" onclick="appendChar('7')">7</button>
+                <button type="button" class="btn" onclick="appendChar('8')">8</button>
+                <button type="button" class="btn" onclick="appendChar('9')">9</button>
+                <button type="button" class="btn btn-operator" onclick="appendChar('-')">−</button>
+                
+                <!-- Row 3: 4, 5, 6, Add -->
+                <button type="button" class="btn" onclick="appendChar('4')">4</button>
+                <button type="button" class="btn" onclick="appendChar('5')">5</button>
+                <button type="button" class="btn" onclick="appendChar('6')">6</button>
+                <button type="button" class="btn btn-operator" onclick="appendChar('+')">+</button>
+                
+                <!-- Row 4: 1, 2, 3, Equals -->
+                <button type="button" class="btn" onclick="appendChar('1')">1</button>
+                <button type="button" class="btn" onclick="appendChar('2')">2</button>
+                <button type="button" class="btn" onclick="appendChar('3')">3</button>
+                <button type="submit" class="btn btn-equals">=</button>
+                
+                <!-- Row 5: 0 (wide), Decimal -->
+                <button type="button" class="btn" onclick="appendChar('0')" style="grid-column: 1 / 3;">0</button>
+                <button type="button" class="btn" onclick="appendChar('.')">.</button>
+            </div>
+            
+            <div class="error-msg" id="error"></div>
+        </form>
     </div>
     
     <script>
-        let displayValue = '{{ expression if expression is defined else '' }}';
-        let serverResult = '{{ result if result is defined else '' }}';
-        if (!displayValue || displayValue === 'None') displayValue = '0';
-        let isDegrees = true;
-        let isInverse = false;
-
-        function updateDisplay(showServerResult = false) {
-            const expressionLine = document.getElementById('expressionLine');
-            const displayEl = document.getElementById('display');
-            const expressionValue = displayValue || '0';
-
-            if (expressionLine) {
-                expressionLine.textContent = expressionValue === '0' ? '' : expressionValue;
-            }
-            if (displayEl) {
-                displayEl.textContent = showServerResult && serverResult ? serverResult : expressionValue;
-            }
-            const hiddenInput = document.getElementById('expression');
-            if (hiddenInput) {
-                hiddenInput.value = displayValue || '0';
-            }
+        let display = '0';
+        
+        function updateDisplay() {
+            document.getElementById('display').textContent = display || '0';
         }
-
-        function appendToDisplay(value) {
-            // Clear error message when user starts entering new data
-            let errorDiv = document.getElementById('error');
-            if (errorDiv) {
-                errorDiv.style.display = 'none';
-                errorDiv.textContent = '';
-            }
-            serverResult = '';
-            if (displayValue === '0' && value !== '.') {
-                displayValue = value;
+        
+        function appendChar(char) {
+            clearError();
+            if (display === '0' && char !== '.') {
+                display = char;
+            } else if (char === '.' && display.includes('.')) {
+                return;
             } else {
-                displayValue += value;
+                display += char;
             }
             updateDisplay();
         }
-
-        function deleteLastChar() {
-            displayValue = displayValue.slice(0, -1) || '0';
-            updateDisplay();
-        }
-
-        function clearAll() {
-            displayValue = '0';
-            updateDisplay();
-            let resultDiv = document.getElementById('result');
-            let errorDiv = document.getElementById('error');
-            if (resultDiv) {
-                resultDiv.style.display = 'none';
-                resultDiv.textContent = '';
-            }
-            if (errorDiv) {
-                errorDiv.style.display = 'none';
-                errorDiv.textContent = '';
-            }
-        }
-
-        function toggleDegRad() {
-            isDegrees = !isDegrees;
-            event.target.textContent = isDegrees ? 'Deg' : 'Rad';
-        }
-
-        function toggleInverse() {
-            isInverse = !isInverse;
-            event.target.textContent = isInverse ? 'Inv' : 'Inv';
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            if (errorDiv) {
-                errorDiv.textContent = '⚠ ' + message;
-                errorDiv.style.display = 'block';
-                // Auto-clear error after 5 seconds
-                setTimeout(() => {
-                    if (errorDiv && errorDiv.textContent.includes(message)) {
-                        errorDiv.style.display = 'none';
-                        errorDiv.textContent = '';
-                    }
-                }, 5000);
-            }
-        }
-
-        function handleSubmit(event) {
-            document.getElementById('expression').value = displayValue;
-            // Validate expression
-            const expr = displayValue.trim();
-            
-            // Check if empty
-            if (!expr || expr === '0') {
-                showError('Please enter a valid expression');
-                event.preventDefault();
-                return false;
-            }
-            
-            // Prevent submission if ends with operator or decimal
-            if (/[*+\-/.]$/.test(expr)) {
-                showError('Expression cannot end with an operator or decimal');
-                event.preventDefault();
-                return false;
-            }
-            
-            // Prevent submission if starts with invalid character
-            if (/^[*+/.]/.test(expr)) {
-                showError('Expression cannot start with an operator');
-                event.preventDefault();
-                return false;
-            }
-            
-            return true;
-        }
-
-        // Keyboard support
-        document.addEventListener('keydown', function(event) {
-            const key = event.key;
-            if (/\d/.test(key) || key === '.') {
-                if (displayValue === '0') displayValue = key;
-                else displayValue += key;
-                updateDisplay();
-            } else if (key === '+' || key === '-' || key === '*' || key === '/') {
-                appendToDisplay(key);
-            } else if (key === 'Enter') {
-                document.getElementById('calcForm').requestSubmit();
-            } else if (key === 'Backspace') {
-                deleteLastChar();
-            } else if (key === 'Escape') {
-                clearAll();
-            }
-        });
-
-        window.addEventListener('load', function() {
-            updateDisplay(!!serverResult);
-        });
-    </script>
-</body>
-</html>
-<body>
-    <div class="container">
-        <div class="calculator">
-            <div class="header">
-                <h1>Scientific Calculator</h1>
-                <p class="subtitle">Professional Mathematical Tool</p>
-            </div>
-            
-            <form action="/calculate" method="post" id="calcForm">
-                <div class="display-area">
-                    <input type="text" name="expression" value="{{ expression if expression else '' }}" placeholder="Enter expression" id="display">
-                </div>
-                
-                <div class="keypad">
-                    <button type="button" class="clear" onclick="clearDisplay()" style="grid-column: 1 / 3;">AC</button>
-                    <button type="button" class="clear" onclick="deleteLastChar()" style="grid-column: 3 / 5;">DEL</button>
-                    <button type="button" class="scientific" onclick="appendToDisplay('(')">(</button>
-                    
-                    <button type="button" class="scientific" onclick="appendToDisplay('math.sin(')">sin</button>
-                    <button type="button" class="scientific" onclick="appendToDisplay('math.cos(')">cos</button>
-                    <button type="button" class="scientific" onclick="appendToDisplay('math.tan(')">tan</button>
-                    <button type="button" class="operator" onclick="appendToDisplay('/')">/</button>
-                    <button type="button" class="scientific" onclick="appendToDisplay('math.sqrt(')">√</button>
-                    
-                    <button type="button" onclick="appendToDisplay('7')">7</button>
-                    <button type="button" onclick="appendToDisplay('8')">8</button>
-                    <button type="button" onclick="appendToDisplay('9')">9</button>
-                    <button type="button" class="operator" onclick="appendToDisplay('*')">×</button>
-                    <button type="button" class="scientific" onclick="appendToDisplay('math.log10(')">log</button>
-                    
-                    <button type="button" onclick="appendToDisplay('4')">4</button>
-                    <button type="button" onclick="appendToDisplay('5')">5</button>
-                    <button type="button" onclick="appendToDisplay('6')">6</button>
-                    <button type="button" class="operator" onclick="appendToDisplay('-')">−</button>
-                    <button type="button" class="scientific" onclick="appendToDisplay('math.pi')">π</button>
-                    
-                    <button type="button" onclick="appendToDisplay('1')">1</button>
-                    <button type="button" onclick="appendToDisplay('2')">2</button>
-                    <button type="button" onclick="appendToDisplay('3')">3</button>
-                    <button type="button" class="operator" onclick="appendToDisplay('+')">+</button>
-                    <button type="button" class="scientific" onclick="appendToDisplay('math.e')">e</button>
-                    
-                    <button type="button" onclick="appendToDisplay('0')">0</button>
-                    <button type="button" onclick="appendToDisplay('.')">.</button>
-                    <button type="button" onclick="appendToDisplay(')')" style="grid-column: 3 / 4;">)</button>
-                    <button type="button" class="operator" onclick="appendToDisplay('**')">x^y</button>
-                    
-                    <button type="submit" class="equals">=</button>
-                </div>
-                
-                {% if result is defined %}
-                    <div class="result">{{ result }}</div>
-                    <div class="success">✓ Calculation complete</div>
-                {% endif %}
-                
-                {% if error is defined %}
-                    <div class="error">⚠ {{ error }}</div>
-                {% endif %}
-            </form>
-        </div>
         
-        <div class="info-panel">
-            <h2>📖 Quick Guide</h2>
-            
-            <div class="tip">
-                <strong>Basic Operations:</strong><br>
-                Use +, −, ×, ÷ for arithmetic
-            </div>
-            
-            <div class="info-item">
-                <strong>Scientific Functions:</strong>
-                <ul style="margin-left: 15px; margin-top: 5px;">
-                    <li>sin, cos, tan - Trigonometric</li>
-                    <li>log - Logarithm base 10</li>
-                    <li>√ - Square root</li>
-                    <li>x^y - Power function</li>
-                </ul>
-            </div>
-            
-            <div class="info-item">
-                <strong>Constants:</strong>
-                <ul style="margin-left: 15px; margin-top: 5px;">
-                    <li>π (pi) ≈ 3.14159</li>
-                    <li>e ≈ 2.71828</li>
-                </ul>
-            </div>
-            
-            <div class="tip">
-                <strong>Examples:</strong><br>
-                sin(π/2) = 1<br>
-                √16 + 5 = 9<br>
-                2^10 = 1024
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function appendToDisplay(value) {
-            const display = document.getElementById('display');
-            display.value += value;
-            display.focus();
-        }
-
         function deleteLastChar() {
-            const display = document.getElementById('display');
-            display.value = display.value.slice(0, -1);
+            clearError();
+            display = display.slice(0, -1) || '0';
+            updateDisplay();
         }
-
+        
         function clearDisplay() {
-            document.getElementById('display').value = '';
-            document.getElementById('display').focus();
+            display = '0';
+            clearError();
+            updateDisplay();
         }
         
-        // Allow keyboard input
-        document.getElementById('display').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('calcForm').submit();
+        function showError(msg) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = msg;
+            errorDiv.classList.add('show');
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 4000);
+        }
+        
+        function clearError() {
+            const errorDiv = document.getElementById('error');
+            errorDiv.classList.remove('show');
+        }
+        
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            // Validate expression
+            if (!display || display === '0' || /[+\-*/.]$/.test(display) || /^[+*/.]/.test(display)) {
+                showError('Invalid expression');
+                return false;
             }
+            
+            // Send to backend
+            document.getElementById('expression').value = display;
+            
+            fetch('/calculate', {
+                method: 'POST',
+                body: new FormData(document.getElementById('calcForm'))
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    display = String(data.result);
+                    updateDisplay();
+                }
+            })
+            .catch(err => {
+                showError('Calculation error');
+            });
+            
+            return false;
+        }
+        
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (/\d/.test(e.key)) appendChar(e.key);
+            else if (e.key === '.') appendChar('.');
+            else if (e.key === '+' || e.key === '-') appendChar(e.key);
+            else if (e.key === '*') appendChar('*');
+            else if (e.key === '/') { e.preventDefault(); appendChar('/'); }
+            else if (e.key === 'Enter') handleSubmit(new Event('submit'));
+            else if (e.key === 'Backspace') { e.preventDefault(); deleteLastChar(); }
+            else if (e.key === 'Escape') clearDisplay();
         });
         
-        // Focus on display when page loads
-        window.addEventListener('load', function() {
-            document.getElementById('display').focus();
-        });
+        updateDisplay();
     </script>
 </body>
 </html>
